@@ -5,26 +5,36 @@ document.addEventListener("DOMContentLoaded", function () {
   form.addEventListener("submit", function (e) {
     e.preventDefault();
 
+    const fechaNacimientoValor = document.getElementById("fechaNacimiento").value;
+
+    // Validación estricta del formato de fecha
+    const regexFecha = /^\d{4}-\d{2}-\d{2}$/;
+    if (!regexFecha.test(fechaNacimientoValor)) {
+      mensaje.textContent = "❌ Fecha inválida. Usá el formato yyyy-MM-dd";
+      mensaje.style.color = "red";
+      return;
+    }
+
     const socio = {
       dni: document.getElementById("dni").value,
       apellido: document.getElementById("apellido").value,
       nombre: document.getElementById("nombre").value,
       edad: parseInt(document.getElementById("edad").value),
-      fechaNacimiento: document.getElementById("fechaNacimiento").value,
+      fechaNacimiento: fechaNacimientoValor,
       direccion: document.getElementById("direccion").value,
       telefono: document.getElementById("telefono").value
     };
 
-    // Detectar si estás en local (sin servidor) o en localhost
     const esArchivoLocal = location.protocol === "file:";
+    const mensajeExito = "✅ Socio registrado exitosamente.";
+    const mensajeError = "❌ Error al registrar socio.";
+    const mensajeErrorRed = "❌ Error de red. No se pudo completar la solicitud.";
 
     if (esArchivoLocal) {
-      // Modo local: simula la respuesta sin llamar al backend
-      mensaje.textContent = "✅ Socio registrado exitosamente.";
+      mensaje.textContent = mensajeExito;
       mensaje.style.color = "green";
       form.reset();
     } else {
-      // Modo con backend: hace la petición real
       fetch("http://localhost:8080/socios", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -32,17 +42,17 @@ document.addEventListener("DOMContentLoaded", function () {
       })
           .then(response => {
             if (response.ok) {
-              mensaje.textContent = "✅ Socio registrado exitosamente.";
+              mensaje.textContent = mensajeExito;
               mensaje.style.color = "green";
               form.reset();
             } else {
-              mensaje.textContent = "❌ Error al registrar socio.";
+              mensaje.textContent = mensajeError + " Código: " + response.status;
               mensaje.style.color = "red";
             }
           })
           .catch(error => {
             console.error("Error:", error);
-            mensaje.textContent = "❌ Error de red.";
+            mensaje.textContent = mensajeErrorRed;
             mensaje.style.color = "red";
           });
     }

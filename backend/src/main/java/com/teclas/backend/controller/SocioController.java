@@ -30,15 +30,14 @@ public class SocioController {
     @Operation(summary = "Listar todos los socios")
     @GetMapping
     public ResponseEntity<List<Socio>> listarTodos() {
-        List<Socio> socios = socioRepository.findAll();
-        return ResponseEntity.ok(socios);
+        return ResponseEntity.ok(socioRepository.findAll());
     }
 
     @Operation(summary = "Buscar un socio por ID")
     @GetMapping("/{id}")
     public ResponseEntity<Socio> obtenerPorId(@PathVariable Long id) {
         Optional<Socio> socio = socioRepository.findById(id);
-        return socio.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+        return socio.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
     @Operation(summary = "Eliminar un socio por ID")
@@ -54,16 +53,15 @@ public class SocioController {
     @Operation(summary = "Actualizar datos de un socio")
     @PutMapping("/{id}")
     public ResponseEntity<Socio> actualizar(@PathVariable Long id, @RequestBody Socio socioActualizado) {
-        return socioRepository.findById(id).map(socioExistente -> {
-            socioExistente.setNombre(socioActualizado.getNombre());
-            socioExistente.setApellido(socioActualizado.getApellido());
-            socioExistente.setDni(socioActualizado.getDni());
-            socioExistente.setEdad(socioActualizado.getEdad());
-            socioExistente.setFechaNacimiento(socioActualizado.getFechaNacimiento());
-            socioExistente.setDireccion(socioActualizado.getDireccion());
-            socioExistente.setTelefono(socioActualizado.getTelefono());
-            Socio actualizado = socioRepository.save(socioExistente);
-            return ResponseEntity.ok(actualizado);
+        return socioRepository.findById(id).map(socio -> {
+            socio.setNombre(socioActualizado.getNombre());
+            socio.setApellido(socioActualizado.getApellido());
+            socio.setDni(socioActualizado.getDni());
+            socio.setEdad(socioActualizado.getEdad());
+            socio.setFechaNacimiento(socioActualizado.getFechaNacimiento());
+            socio.setDireccion(socioActualizado.getDireccion());
+            socio.setTelefono(socioActualizado.getTelefono());
+            return ResponseEntity.ok(socioRepository.save(socio));
         }).orElse(ResponseEntity.notFound().build());
     }
 }
