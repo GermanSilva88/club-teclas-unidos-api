@@ -27,36 +27,53 @@ public class SocioController {
         return ResponseEntity.ok(guardado);
     }
 
-    @Operation(summary = "Listar todos los socios")
     @GetMapping
-    public ResponseEntity<List<Socio>> listarTodos() {
-        return ResponseEntity.ok(socioRepository.findAll());
+    @Operation(summary = "Listar socios con filtros por apellido y edad")
+    public ResponseEntity<List<Socio>> listarFiltrados(
+            @RequestParam(required = false) String apellido,
+            @RequestParam(required = false) Integer edad) {
+
+        List<Socio> socios;
+
+        if (apellido != null && edad != null) {
+            socios = socioRepository.findByApellidoAndEdad(apellido, edad);
+        } else if (apellido != null) {
+            socios = socioRepository.findByApellido(apellido);
+        } else if (edad != null) {
+            socios = socioRepository.findByEdad(edad);
+        } else {
+            socios = socioRepository.findAll();
+        }
+
+        return ResponseEntity.ok(socios);
     }
 
-    @Operation(summary = "Buscar un socio por ID")
-    @GetMapping("/{id}")
-    public ResponseEntity<Socio> obtenerPorId(@PathVariable Long id) {
-        Optional<Socio> socio = socioRepository.findById(id);
+
+    @Operation(summary = "Buscar un socio por DNI")
+    @GetMapping("/{dni}")
+    public ResponseEntity<Socio> obtenerPorDni(@PathVariable String dni) {
+        Optional<Socio> socio = socioRepository.findByDni(dni);
         return socio.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
-    @Operation(summary = "Eliminar un socio por ID")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long id) {
-        if (socioRepository.existsById(id)) {
-            socioRepository.deleteById(id);
+    @Operation(summary = "Eliminar un socio por DNI")
+    @DeleteMapping("/{dni}")
+    public ResponseEntity<Void> eliminar(@PathVariable String dni) {
+        Optional<Socio> socio = socioRepository.findByDni(dni);
+        if (socio.isPresent()) {
+            socioRepository.delete(socio.get());
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
     }
 
-    @Operation(summary = "Actualizar datos de un socio")
-    @PutMapping("/{id}")
-    public ResponseEntity<Socio> actualizar(@PathVariable Long id, @RequestBody Socio socioActualizado) {
-        return socioRepository.findById(id).map(socio -> {
+
+    @Operation(summary = "Actualizar datos de un socio por DNI")
+    @PutMapping("/{dni}")
+    public ResponseEntity<Socio> actualizar(@PathVariable String dni, @RequestBody Socio socioActualizado) {
+        return socioRepository.findByDni(dni).map(socio -> {
             socio.setNombre(socioActualizado.getNombre());
             socio.setApellido(socioActualizado.getApellido());
-            socio.setDni(socioActualizado.getDni());
             socio.setEdad(socioActualizado.getEdad());
             socio.setFechaNacimiento(socioActualizado.getFechaNacimiento());
             socio.setDireccion(socioActualizado.getDireccion());
@@ -64,4 +81,5 @@ public class SocioController {
             return ResponseEntity.ok(socioRepository.save(socio));
         }).orElse(ResponseEntity.notFound().build());
     }
+
 }
