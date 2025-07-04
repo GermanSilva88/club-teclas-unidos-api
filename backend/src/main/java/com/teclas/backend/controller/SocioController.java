@@ -4,6 +4,7 @@ import com.teclas.backend.model.Socio;
 import com.teclas.backend.repository.SocioRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +23,7 @@ public class SocioController {
 
     @Operation(summary = "Registrar un nuevo socio")
     @PostMapping
-    public ResponseEntity<Socio> registrar(@RequestBody Socio socio) {
+    public ResponseEntity<Socio> registrar(@Valid @RequestBody Socio socio) {
         Socio guardado = socioRepository.save(socio);
         return ResponseEntity.ok(guardado);
     }
@@ -70,7 +71,7 @@ public class SocioController {
 
     @Operation(summary = "Actualizar datos de un socio por DNI")
     @PutMapping("/{dni}")
-    public ResponseEntity<Socio> actualizar(@PathVariable String dni, @RequestBody Socio socioActualizado) {
+    public ResponseEntity<Socio> actualizar(@PathVariable String dni, @Valid @RequestBody Socio socioActualizado) {
         return socioRepository.findByDni(dni).map(socio -> {
             socio.setNombre(socioActualizado.getNombre());
             socio.setApellido(socioActualizado.getApellido());
