@@ -17,11 +17,11 @@ public class AltaSocioTest {
     void setUp() {
         System.setProperty("webdriver.chrome.driver", "driver/chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--auto-open-devtools-for-tabs"); // Abrir consola DevTools al iniciar
+        //options.addArguments("--auto-open-devtools-for-tabs"); // Abrir consola DevTools al iniciar
         driver = new ChromeDriver(options);
 
         wait = new WebDriverWait(driver, Duration.ofSeconds(15)); // + tiempo por si tarda backend
-        driver.manage().window().maximize();
+        //driver.manage().window().maximize();
     }
 
     @Test
@@ -57,7 +57,7 @@ public class AltaSocioTest {
         //Thread.sleep(Long.MAX_VALUE); // Pausa indefinida para que puedas inspeccionar la consola
     }
 
-    @AfterEach
+    /*@AfterEach
     void tearDown() {
         // Comento driver.quit() para que no cierre el navegador automáticamente
 
@@ -65,5 +65,5 @@ public class AltaSocioTest {
             driver.quit();
         }
 
-    }
+    }*/
 }
