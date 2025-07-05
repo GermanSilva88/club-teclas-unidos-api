@@ -1,0 +1,383 @@
+{
+  "info": {
+    "name": "Socios API Collection",
+    "description": "Colección de Postman para probar todos los endpoints de la API de Socios",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Listar todos los socios",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/socios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "socios"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response is an array\", function () {",
+              "    pm.expect(pm.response.json()).to.be.an('array');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar socios filtrando por apellido",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/socios?apellido={{apellido}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "socios"
+          ],
+          "query": [
+            {
+              "key": "apellido",
+              "value": "{{apellido}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar socios filtrando por edad",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/socios?edad={{edad}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "socios"
+          ],
+          "query": [
+            {
+              "key": "edad",
+              "value": "{{edad}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Listar socios filtrando por apellido y edad",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/socios?apellido={{apellido}}&edad={{edad}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "socios"
+          ],
+          "query": [
+            {
+              "key": "apellido",
+              "value": "{{apellido}}"
+            },
+            {
+              "key": "edad",
+              "value": "{{edad}}"
+            }
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Consultar socio por DNI",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/socios/{{createdDni}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "socios",
+            "{{createdDni}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test(\"Response has correct DNI\", function () {",
+              "    var json = pm.response.json();",
+              "    pm.expect(json.dni).to.eql(pm.variables.get(\"createdDni\"));",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear socio válido",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"dni\": \"{{dni}}\",\n  \"apellido\": \"{{apellido}}\",\n  \"nombre\": \"{{nombre}}\",\n  \"edad\": {{edad}},\n  \"fechaNacimiento\": \"{{fechaNacimiento}}\",\n  \"direccion\": \"{{direccion}}\",\n  \"telefono\": \"{{telefono}}\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/socios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "socios"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "var json = pm.response.json();",
+              "pm.variables.set(\"createdDni\", json.dni);",
+              "pm.test(\"Response has an id\", function () {",
+              "    pm.expect(json).to.have.property('id');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Crear socio con DNI faltante (error)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apellido\": \"Ramirez\",\n  \"nombre\": \"Carla\",\n  \"edad\": 31,\n  \"fechaNacimiento\": \"1992-01-22\",\n  \"direccion\": \"Calle Siempre Viva 123\",\n  \"telefono\": \"123456789\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/socios",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "socios"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {",
+              "    pm.response.to.have.status(400);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Actualizar socio",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"apellido\": \"{{apellido}}\",\n  \"nombre\": \"{{nombre}}\",\n  \"edad\": {{edad}},\n  \"fechaNacimiento\": \"{{fechaNacimiento}}\",\n  \"direccion\": \"{{direccion}}\",\n  \"telefono\": \"{{telefono}}\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/socios/{{createdDni}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "socios",
+            "{{createdDni}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Eliminar socio",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:8080/socios/{{createdDni}}",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "socios",
+            "{{createdDni}}"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Status code is 204\", function () {",
+              "    pm.response.to.have.status(204);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "dni",
+      "value": "44556677"
+    },
+    {
+      "key": "apellido",
+      "value": "Gonzalez"
+    },
+    {
+      "key": "nombre",
+      "value": "Mariana"
+    },
+    {
+      "key": "edad",
+      "value": 29
+    },
+    {
+      "key": "fechaNacimiento",
+      "value": "1994-08-12"
+    },
+    {
+      "key": "direccion",
+      "value": "Av. Siempre Viva 742"
+    },
+    {
+      "key": "telefono",
+      "value": "987654321"
+    }
+  ]
+}
