@@ -5,6 +5,7 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.*;
+import com.github.javafaker.Faker;
 
 import java.time.Duration;
 
@@ -30,14 +31,22 @@ public class AltaSocioTest {
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("socioForm")));
 
-        driver.findElement(By.id("dni")).sendKeys("33445566");
-        driver.findElement(By.id("apellido")).sendKeys("Ramirez");
-        driver.findElement(By.id("nombre")).sendKeys("");
+        Faker faker = new Faker();
+
+        String dni = String.valueOf(30000000 + faker.number().numberBetween(0, 999999));
+        String apellido = faker.name().lastName();
+        String nombre = faker.name().firstName();
+        String direccion = faker.address().streetAddress();
+        String telefono = faker.phoneNumber().cellPhone();
+
+        driver.findElement(By.id("dni")).sendKeys(dni);
+        driver.findElement(By.id("apellido")).sendKeys(apellido);
+        driver.findElement(By.id("nombre")).sendKeys(nombre);
         driver.findElement(By.id("edad")).clear();
-        driver.findElement(By.id("edad")).sendKeys("31");
-        driver.findElement(By.id("fechaNacimiento")).sendKeys("22-04-1994");
-        driver.findElement(By.id("direccion")).sendKeys("Calle Siempre Viva 123");
-        driver.findElement(By.id("telefono")).sendKeys("123456789");
+        driver.findElement(By.id("edad")).sendKeys(String.valueOf(faker.number().numberBetween(18, 65)));
+        driver.findElement(By.id("fechaNacimiento")).sendKeys("01-01-1990"); // Se podria automatizar
+        driver.findElement(By.id("direccion")).sendKeys(direccion);
+        driver.findElement(By.id("telefono")).sendKeys(telefono);
 
         driver.findElement(By.cssSelector("form button[type='submit']")).click();
 
